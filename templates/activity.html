@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load i18n cache humanize sefaria_tags static %}
+{% load static %}
+
+{% block title %}
+	{% if single %}
+{% trans "activity.revision_history" %} {{ ref }} ({{ version }})
+	{% elif for_user %}
+{{ profile.full_name }} | {% trans "activity.pecha_activity_profile" %}
+	{% else %}
+{% trans "activity.pecha_activity" %}
+	{% endif %}
+{% endblock %}
+
+{% block description %}
+	{% if single %}
+{% trans "activity.revision_history_message" %}
+	{% elif for_user %}
+{% trans "activity.activity_message" %}
+	{% else %}
+{% trans "activity.view_log_message" %}
+	{% endif %}
+{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex">
+	<style>
+		@font-face {
+			font-family: 'Monlam Uni OuChan2';
+			src: url("{% static 'fonts/Monlam Uni OuChan2.ttf' %}") format('truetype');
+		}
+		.monlam-font {
+			font-family: 'Monlam Uni OuChan2', sans-serif;
+		}
+	</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div id="activityPage" class="container static">
+    <div class="inner">
+        {% if single %}
+		    <h1>
+				<span class="{{ language_font_class }}">{% trans "activity.revision_history" %} {{ ref|ref_link }}</a></span>
+		    </h1>
+		    <h2>
+				<span class="{{ language_font_class }}">{{ version }}</span>
+		    </h2>
+        {% elif for_user %}
+            <h1>
+            	<span class="{{ language_font_class }}">{{ profile.id|user_link }}| {% trans "activity.public_activity" %}</span>            	
+        	</h1>
+        {% else %}
+            <h1>
+				<span class="{{ language_font_class }}">{% trans "activity.recent_activity" %}</span>
+        	</h1>
+        {% endif %}
+        <div class="activityFilterSection sans-serif">
+            <select class="monlam-font" id="activityFilter">
+                <option class="monlam-font" value=""{% if not filter_type %} selected {% endif %}>{% trans "activity.all_activity_drop_down" %}</option>
+                <option class="monlam-font" value="translate" {% if filter_type == "translate" %} selected {% endif %}>{% trans "activity.translation_option" %}</option>
+                <option class="monlam-font" value="publish_sheet"{% if filter_type == "publish_sheet" %} selected {% endif %}>{% trans "activity.source_sheets_option" %}</option>
+                <option class="monlam-font" value="add_text"{% if filter_type == "add_text" %} selected {% endif %}>{% trans "activity.new_texts_option" %}</option>
+                <option class="monlam-font" value="edit_text"{% if filter_type == "edit_text" %} selected {% endif %}>{% trans "activity.edit_list_option" %}</option>
+                <option class="monlam-font" value="add_note"{% if filter_type == "add_note" %} selected {% endif %}>{% trans "activity.notes_option" %}</option>
+                <option class="monlam-font" value="review"{% if filter_type == "review" %} selected {% endif %}>{% trans "activity.reviews_option" %}</option>
+                <option class="monlam-font" value="index_change"{% if filter_type == "index_change" %} selected {% endif %}>{% trans "activity.text_info_option_option" %}</option>
+                <option class="monlam-font" value="revert_text"{% if filter_type == "revert_text" %} selected {% endif %}>{% trans "activity.reversions_option" %}</option>
+                <option class="monlam-font" value="flagged"{% if filter_type == "flagged" %} selected {% endif %}>{% trans "activity.flagged_option" %}</option>
+            </select>
+        </div>
+
+        <div class="section">
+            <div class="main-text">
+                <div id="activityFeed">
+                    {% include "elements/activity_feed.html" %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+	{% if single %}
+		<script>{% include "js/django-csrf.js" %}</script>
+		<script>
+			$(function(){
+				$(".revert").click(function() {
+					if (confirm("Are you sure you want to revert to a previous state of this text?")) {
+						revUrl = $(this).attr("data-revert");
+						$.post(revUrl, function(data) {
+							if ("error" in data) {
+								alert(data.error);
+							} else {
+								location.reload(true);
+							}
+						});
+
+					}
+				});
+			});
+		</script>
+	{% else %}
+		<script>
+			$("#contributors h4").click(function() {
+				$("#contributors .board").show();
+			});
+		</script>
+	{% endif %}
+	<script src="{% static 'js/lib/jquery.raty.js' %}"></script>
+    {% static "img/raty/" as path %}
+	<script>
+	    var ratySettings = { // for text review ratings
+	        path: {{path}},
+	        hints: ["Major problems", "Some problems", "Seems good", "Good", "Definately good"]
+	    };
+	    $(".raty").each(function() {
+	        var score = parseFloat($(this).attr("data-raty")) * 5;
+	        var settings = $.extend({}, ratySettings, {score: score, readOnly: true });
+	        $(this).raty(settings);
+	    });
+	    $(".indexDetailsLink").click(function(){
+	    	$(this).closest("li").find(".indexDetails").show();
+	    })
+	</script>
+    <script>
+        document.getElementById('activityFilter').onchange = function() {
+            var filter_type = this.value;
+            filtered_url = (filter_type != "") ? "?type="+filter_type : "?";
+            window.location = filtered_url;
+        };
+    </script>
+{% endblock %}

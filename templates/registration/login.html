@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}  
+
+{% block title %}{% trans "registration.login.login_in_to_pecha" %}{% endblock %}
+
+{% block head %}
+<style>
+    @font-face {
+        font-family: 'Monlam Uni OuChan2';
+        src: url("{% static 'fonts/Monlam Uni OuChan2.ttf' %}") format('truetype');
+    }
+    .monlam-font {
+        font-family: 'Monlam Uni OuChan2', sans-serif;
+    }
+</style>
+{% endblock %}
+
+{% block description %}{% trans "registration.login.login_in_to_pecha_description" %}{% endblock %}
+
+{% block content %}
+
+{% if user.email %}
+    <div id="login" class="biReady registrationContent static">
+        <div class="inner">
+            <p id="message">
+                <span class="{{ language_font_class }} monlam-font">{% trans "registration.login.you_are_already_logged_in_as" %}</span>
+                {{ user.email }}.
+                <a href="{% url "logout" %}">
+                    <span class="{{ language_font_class }} monlam-font">{% trans "common.registration.login.log_out" %}</span>
+                </a>
+            </p>
+        </div>
+    </div>
+
+{% else %}
+
+	<div id="login" class="biReady registrationContent static">
+        <div class="inner">
+            {% if message %}<p id="message">{{ message }}</p>{% endif %}
+            <h1>
+                <span class="monlam-font">{% trans "registration.login.login_in_to_pecha" %}</span>
+            </h1>
+            {% if form.errors %}
+            <p class="error">
+                <span class="monlam-font">{% trans "registration.login.username_and_password_didn't_match_message" %}</span>
+            </p>
+            {% endif %}
+
+            <form id="login-form" method="post" action="{% url "login" %}">
+                {% csrf_token %}
+
+                <p>
+                    {{ form.email.label_tag }}
+                    <td>{{ form.email }}</td>
+                </p>
+                <p>
+                    {{ form.password.label_tag }}
+                    <td>{{ form.password }}</td>
+                </p>
+
+                <button type="submit" class="button control-elem" id="login-submit-button">
+                    <span class="monlam-font">{% trans "common.registration.login.log_in" %}</span>
+                </button>
+                <a class="registration-links control-elem" href="{% url "password_reset" %}" id="resetLink">
+                    <span class="monlam-font">{% trans "common.registration.login.forgot_your_password" %}</span>
+                </a>
+                <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+            <a class="registration-links control-elem" href="{% url "register" %}{% if next %}?next={{ next }}{% endif %}">
+                <span class="monlam-font">{% trans "common.registration.login.create_a_new_account" %}</span>
+
+            </a>
+	    </div>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<div id="loginPrompt" class="modal">
+	<h3>{{ msg }}</h3>
+
+	<a id="loginLink" class="button" href="">Log In</a> <a id="registerLink"  class="button" >{% trans 'common.templates.elements.login_prompts.sign_up' %}</a>
+	<div>
+		<div class="cancel">{% trans 'common.login_prompt_cancel' %}</div>
+	</div>
+</div>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load sefaria_tags %}
+
+{% block title %}{% trans "people.authors_on_pecha" %}{% endblock %}
+
+{% block description %}{% trans "people.biography_and_informations_about_authors" %}{% endblock %}
+
+{% block css %}
+    #languageToggle {
+        display: inline;
+    }
+    #languageToggle #bilingual {
+        display: none;
+    }
+{% endblock %}
+
+{% block content %}
+
+<div id="peoplePage" class="biReady container static">
+    <div class="inner">
+        <h1>
+            <span class="{{ language_font_class }}">{% trans "people.authors" %}</span>
+        </h1>
+        <div class="section">
+            <div class="authors-row">
+                <div class="author">
+                    <span class="{{ language_font_class }}"><a href="/people/Talmud">{% trans "people.choejuk_author" %}</a></span>
+                </div>
+
+            </div>
+
+            {% for era in eras %}
+
+                <div class="era">
+                    <h3>
+                        <span class="int-en">{{ era.name_en }}</span>
+                        <span class="int-he">{{ era.name_he }}</span>
+                        <span class="subtitle int-en"> {{ era.years_en }}</span>
+                        <span class="subtitle int-he"> {{ era.years_he }}</span>
+                    </h3>
+                    {% for r in era.people|partition_by:"2" %}
+                        <div class="authors-row">
+                            {%  for person in r %}
+                                <p class="author">
+                                   {{ person|person_link }}
+                                </p>
+                            {%  endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

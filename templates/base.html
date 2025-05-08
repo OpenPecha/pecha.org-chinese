@@ -1,0 +1,401 @@
+{% load render_bundle from webpack_loader %}
+{% load static %}
+{% load sefaria_tags %}
+{% get_static_prefix as STATIC_PREFIX %}
+{% load cache_busting %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Pecha - Learn, live, and share Buddhist wisdom everyday </title>
+    <meta charset="utf-8"/>
+    <!-- <meta name="description" content="{% block description %}{{ desc|striptags }}{% endblock %}"/> -->
+
+    <!-- SEO Tags -->
+    <meta name="title" content="Pecha - Learn, live and share Buddhist wisdom everyday">
+    <meta name="keywords" content="pecha, Pecha, pecha.org, pecha, དཔེ་ཆ་, Tibetan Buddhism, Buddhist texts, ">
+    <meta name="description" content="The largest free library of Buddhist texts available to read online in Tibetan, English and Chinese including Sutras, Tantras, Abhidharma, Vinaya, commentaries and more."/>
+    <meta name="author" content="Pecha.org">
+    <meta name="robots" content="index, follow">
+    <meta name="revisit-after" content="7 days">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous">
+
+
+    {% if noindex or DEBUG %}
+        <meta name="robots" content="index, follow">
+    {% endif %}
+
+    <!-- <link rel="search" type="application/opensearchdescription+xml" title="Sefaria Search" href="{% static 'files/opensearch.xml' %}" /> -->
+
+    <!-- {% if SITE_SETTINGS.TORAH_SPECIFIC %}
+    <link rel="alternate" href="https://www.pecha.org{{ request.path }}" hreflang="en" />
+    <link rel="alternate" href="https://www.pecha.org{{ request.path }}" hreflang="he" />
+    {% endif %} -->
+
+    {% if canonical_url %}
+    <link rel="canonical" href="{{canonical_url}}" />
+    {% endif %}
+
+    {% block ogtype %}
+        <meta property="og:type" content="website"/>
+    {% endblock %}
+
+    {% block ogimage %}
+        <!-- <meta property="og:title" content="Pecha - Buddhism in your own words" /> -->
+        <meta property="og:description" content="{% block fb_description %}{{ desc|striptags }}{% endblock %}"/>
+        <!-- <meta property="og:image" content="https://{{ request.get_host }}/api/img-gen{{ request.path }}?lang={{ request.GET.lang }}&platform=facebook&ven={{ request.GET.ven }}&vhe={{ request.GET.vhe }}" /> -->
+        <meta property="og:image" content="https://{{ request.get_host }}/api/img-gen{{ request.path }}?lang={{ request.GET.lang }}{% if request.GET.ven %}&ven={{ request.GET.ven|urlencode  }}{% endif %}{% if request.GET.vhe %}&vhe={{ request.GET.|urlencode  }}{% endif %}" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <!-- Debugging: Display the og:image URL -->
+    {% endblock %}
+
+    
+
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@sefariaproject" />
+    <meta name="twitter:title" content="{{title|striptags}}" />
+    <meta name="twitter:description" content="{% block soc_description %}{{ desc|striptags }}{% endblock %}" />
+    <!-- <meta name="twitter:image" content="https://{{ request.get_host }}/api/img-gen{{ request.path }}?lang={{request.GET.lang}}&ven={{request.GET.ven}}&vhe={{request.GET.vhe}}" /> -->
+    <meta name="twitter:image" content="https://{{ request.get_host }}/api/img-gen{{ request.path }}?lang={{ request.GET.lang }}{% if request.GET.ven %}&ven={{ request.GET.ven|urlencode  }}{% endif %}{% if request.GET.vhe %}&vhe={{ request.GET.vhe|urlencode  }}{% endif %}&platform=twitter" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#000000">
+    <title>My PWA</title>
+
+    <!-- https://realfavicongenerator.net -->
+    <link rel="favicon-pecha" sizes="180x180" href="{% static 'icons/favicon-pecha.png' %}?v=xQzLlLp7oR">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icons/favicon-pecha.png' %}?v=xQzLlLp7oR">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icons/favicon-pecha.png' %}?v=xQzLlLp7oR">
+    <!-- <link rel="mask-icon" href="{% static 'icons/safari-pinned-tab.svg' %}?v=xQzLlLp7oR" color="#273557"> -->
+    <link rel="shortcut icon" href="{% static 'icons/favicon-pecha.png'%}?v=xQzLlLp7oR">
+    <link rel="stylesheet" href="{% static 'css/feedbucketStyle.css' %}">
+    <meta name="theme-color" content="#273557">
+
+
+    <!-- {% if ldBreadcrumbs %}{% autoescape off %}
+    <script type="application/ld+json">{{ ldBreadcrumbs }}</script>
+    {% endautoescape %}{% endif %} -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "url": "https://pecha.org",
+        "logo": "https://pecha.org/static/img/pecha-icon.png"
+      }
+      </script>
+
+    {% block head %}{% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script>
+        WebFont.load({
+          google: {
+            families: ['Crimson Text:400,700'],
+            text: 'ăǎġḥḤḫḳḲŏŠšṭżūẓŻāīēḗęîїìi̧ ̆̄'
+          },
+          typekit: {
+            id: 'aeg8div' // Adobe Garamond Pro
+          }
+        });
+        WebFont.load({
+          google: {
+            families: ['Roboto:300,400,700', 'Heebo:300,400,700:hebrew'] // The dotted h causes Heebo not to load.
+          }
+        });
+        WebFont.load({
+          google: {
+            families: ['Noto Sans Samaritan'],
+            text: 'ࠀࠁࠂࠃࠄࠅࠆࠇࠈࠉࠊࠋࠌࠍࠎࠏࠐࠑࠒࠓࠔࠕ'
+          }
+        });
+    </script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <link rel="stylesheet" href="{% versioned_static 'css/common.css' %}">
+    <link rel="stylesheet" href="{%  versioned_static 'font-awesome/css/font-awesome.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% versioned_static 'css/keyboard.css' %}">
+    <link rel="stylesheet" href="{% versioned_static 'css/s2.css' %}">
+    <link rel="stylesheet" href="{%  versioned_static 'css/s2-print.css' %}" media="print" />
+
+    {% block static_css %}
+    {% if not html %}
+    <link rel="stylesheet" href="{%  versioned_static 'css/static.css' %}">
+    {% endif %}
+    {% endblock %}
+
+    <style>
+        {% block css %}{% endblock %}
+    </style>
+
+
+    {% if GOOGLE_TAG_MANAGER_CODE %}
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',"{{ GOOGLE_TAG_MANAGER_CODE }}");</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Start VWO Async SmartCode -->
+    <script type='text/javascript' id='vwoCode'>
+    window._vwo_code=window._vwo_code || (function() {
+    var account_id=682715,
+    version = 1.5,
+    settings_tolerance=2000,
+    library_tolerance=2500,
+    use_existing_jquery=false,
+    is_spa=1,
+    hide_element='body',
+    hide_element_style = 'opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important',
+    /* DO NOT EDIT BELOW THIS LINE */
+    f=false,d=document,vwoCodeEl=d.querySelector('#vwoCode'),code={use_existing_jquery:function(){return use_existing_jquery},library_tolerance:function(){return library_tolerance},hide_element_style:function(){return'{'+hide_element_style+'}'},finish:function(){if(!f){f=true;var e=d.getElementById('_vis_opt_path_hides');if(e)e.parentNode.removeChild(e)}},finished:function(){return f},load:function(e){var t=d.createElement('script');t.fetchPriority='high';t.src=e;t.type='text/javascript';t.innerText;t.onerror=function(){_vwo_code.finish()};d.getElementsByTagName('head')[0].appendChild(t)},getVersion:function(){return version},getMatchedCookies:function(e){var t=[];if(document.cookie){t=document.cookie.match(e)||[]}return t},getCombinationCookie:function(){var e=code.getMatchedCookies(/(?:^|;)\s?(_vis_opt_exp_\d+_combi=[^;$]*)/gi);e=e.map(function(e){try{var t=decodeURIComponent(e);if(!/_vis_opt_exp_\d+_combi=(?:\d+,?)+\s*$/.test(t)){return''}return t}catch(e){return''}});var i=[];e.forEach(function(e){var t=e.match(/([\d,]+)/g);t&&i.push(t.join('-'))});return i.join('|')},init:function(){if(d.URL.indexOf('__vwo_disable__')>-1)return;window.settings_timer=setTimeout(function(){_vwo_code.finish()},settings_tolerance);var e=d.createElement('style'),t=hide_element?hide_element+'{'+hide_element_style+'}':'',i=d.getElementsByTagName('head')[0];e.setAttribute('id','_vis_opt_path_hides');vwoCodeEl&&e.setAttribute('nonce',vwoCodeEl.nonce);e.setAttribute('type','text/css');if(e.styleSheet)e.styleSheet.cssText=t;else e.appendChild(d.createTextNode(t));i.appendChild(e);var n=this.getCombinationCookie();this.load('https://dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&f='+ +is_spa+'&vn='+version+(n?'&c='+n:''));return settings_timer}};window._vwo_settings_timer = code.init();return code;}());
+    </script>
+    <!-- End VWO Async SmartCode -->
+
+    {% endif %}
+
+
+    <!-- {% if HOTJAR_ID %}
+    Hotjar Tracking Code for https://www.sefaria.org
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:{{ HOTJAR_ID }},hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
+    {% endif %} -->
+
+    <meta name="google-site-verification" content="IQIF71Vtc74ylIZ1EWMuaQTsk6CyjXLosHkyDNIASic" />
+
+<!-- ios support -->
+<link rel="apple-touch-icon" href="images/icons/icon-72x72.png" />
+<link rel="apple-touch-icon" href="images/icons/icon-96x96.png" />
+<link rel="apple-touch-icon" href="images/icons/icon-128x128.png" />
+<link rel="apple-touch-icon" href="images/icons/icon-144x144.png" />
+<link rel="apple-touch-icon" href="images/icons/icon-152x152.png" />
+<link rel="apple-touch-icon" href="images/icons/icon-192x192.png" />
+<link rel="apple-touch-icon" href="images/icons/icon-384x384.png" />
+<link rel="apple-touch-icon" href="images/icons/icon-512x512.png" />
+<meta name="apple-mobile-web-app-status-bar" content="#db4938" />
+<meta name="theme-color" content="#db4938" />
+
+<!-- <style>
+  #installDialog {
+      /* display: none; */
+      z-index: 70000;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+</style> -->
+
+
+</head>
+
+<body class="interface-{% if request.interfaceLang %}{{request.interfaceLang}}{% else %}english{% endif %}{% if EMBED %} embeded{% endif %} {% block bodyclasses %}{% endblock %}">
+    {% if GOOGLE_TAG_MANAGER_CODE %}
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ GOOGLE_TAG_MANAGER_CODE }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    {% endif %}
+
+    <!-- <div id="installDialog">
+      <p>Do you want to install this app?</p>
+      <button id="installBtn">Install</button>
+      <button id="closeBtn">Close</button>
+    </div> -->
+
+    {% autoescape off %}
+
+    <script src="{% static 'pwa.js' %}"></script>
+
+    <!--Sentry error reporting config-->
+    <script>
+      {% if CLIENT_SENTRY_DSN %}
+        const sentryDSN = "{{CLIENT_SENTRY_DSN}}";
+      {% else %}
+        const sentryDSN = null;
+      {% endif %}
+    </script>
+    <!--End Sentry error reporting config-->
+
+    {% if html %}
+    <!-- React will complain about whitespace -->
+    <div id="s2">{{ html }}</div>
+    {% else %}
+    <div id="s2" class="headerOnly">
+        {% if request.user_agent.is_mobile %}
+            {% if request.user.is_authenticated %}
+                {{ logged_in_mobile_header }}
+            {% else %}
+                {{ logged_out_mobile_header }}
+            {% endif %}
+        {% elif request.user.is_authenticated %}
+            {{ logged_in_header }}
+        {% else %}
+            {{ logged_out_header }}
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endautoescape %}
+
+    {% if not html %}
+    <div id="staticContentWrapper">
+        <div id="content" class="interface-{{ request.interfaceLang }}">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    {% block footer %} <!-- todo: sheets is overwriting this, why? -->
+        {% if SITE_SETTINGS.TORAH_SPECIFIC %}
+            <div id="footerContainer">{% include "elements/footer.html" %}</div>
+        {% endif %}
+    {% endblock %}
+    {% endif %}
+
+    <div id="overlay"></div>
+
+    <script src="https://unpkg.com/react@16/umd/react.{% if DEBUG %}development{% else %}production.min{% endif %}.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.{% if DEBUG %}development{% else %}production.min{% endif %}.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+
+    <script src="{% static 'js/lib/keyboard.js' %}"></script>
+    <script src="/data.{{ last_cached_short }}.js"></script>
+    <script src="/static/js/sefaria/util.js"></script>
+
+    <script>
+      {% autoescape off %}
+      if (!window.jQuery) {
+        console.log('loading jquery locally');
+        document.write('<script src="/static/js/lib/jquery.js"><\/script><script src="/static/js/lib/jquery-ui.js"><\/script>');
+      }
+      if (!window.React) {
+          console.log('loading react locally');
+          document.write('<script src="/static/js/lib/react.development.js"><\/script><script src="/static/js/lib/react-dom.development.js"><\/script>');
+      }
+
+      var DJANGO_VARS = {
+        props:         {{ propsJSON|default:"null" }},
+        contentLang:   "{{ request.contentLang }}",
+        inReaderApp:   {% if html %}true{% else %}false{% endif %},
+        static_url:    {{ STATIC_PREFIX }},
+      };
+
+      {% if STRAPI_LOCATION and STRAPI_PORT %}
+          var STRAPI_INSTANCE =  "{{ STRAPI_LOCATION }}:{{ STRAPI_PORT }}";
+      {% else %}
+          var STRAPI_INSTANCE = null;
+      {% endif %}
+
+      {% endautoescape %}
+    </script>
+
+    {% if GOOGLE_GTAG %}
+      <!-- Google tag (gtag.js) -->
+          <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_GTAG }}"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ GOOGLE_GTAG }}', {
+              'user_id': DJANGO_VARS.props ? DJANGO_VARS.props._uid : null
+            });
+          </script>
+      <!-- End Google tag -->
+    {% endif %}
+
+
+    {% render_bundle 'main' %}
+
+    {% block js %}{% endblock %}
+
+    <!-- <div class="feedback_container" id="imageContainer">
+      <img src="https://cdn.icon-icons.com/icons2/2406/PNG/512/times_error_fail_failure_failed_cross_icon_145926.png" alt="icon" id="crossImage" class="hidden">
+    </div> -->
+
+    <script type="text/javascript">
+      // This function will load the feedbucket script dynamically
+      function loadFeedbucket() {
+        const s = document.createElement('script');
+        s.module = true;
+        s.defer = true;
+        s.src = "https://cdn.feedbucket.app/assets/feedbucket.js";
+        s.dataset.feedbucket = '0csPeBQ216w32NZdoqnk';
+        document.head.appendChild(s);
+        const crossImage =document.querySelector("#crossImage");
+        const messageImage =document.querySelector("#messageImage");
+
+        const feedbucket = document.querySelector("feedbucket-app");
+        // Remove the event listener so the script isn't loaded multiple times
+        let container=document.getElementById('imageContainer');
+        feedbucket.classList.toggle('hidden');
+        crossImage.classList.toggle('hidden');
+        if (!crossImage.classList.toggle('hidden')) {
+            feedbucket.classList.add('hidden'); // Hide feedbucket
+            crossImage.classList.add('hidden'); // Hide crossImage
+        } else {
+            feedbucket.classList.remove('hidden'); // Show feedbucket
+        }
+      }
+
+      // Add click event listener to the container
+      document.getElementById('crossImage').addEventListener('click', loadFeedbucket);
+    </script>
+    <script>
+      const userTypeInput = document.getElementById('user_type');
+      const userTypeDisplay = document.getElementById('user_type_display');
+      const dropdownContent = document.getElementById('dropdownContent');
+    
+      // Toggle dropdown visibility
+      userTypeDisplay.addEventListener('click', function() {
+        
+          dropdownContent.classList.toggle('show');
+      });
+    
+      // Set value when an option is selected
+      document.querySelectorAll('.dropdown-item').forEach(item => {
+          item.addEventListener('click', function() {
+            userTypeDisplay.value = this.textContent;
+              userTypeInput.value = `${item.getAttribute('data-value')}`;
+              console.log("value : ", userTypeInput.value)
+              dropdownContent.classList.remove('show');
+          });
+      });
+
+    
+      // Close dropdown if clicked outside
+      window.addEventListener('click', function(event) {
+          if (!event.target.matches('#user_type_display')) {
+              dropdownContent.classList.remove('show');
+          }
+      });
+    </script>
+
+    {% comment %} <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="b5a8d317-af7b-4b83-8801-84e6658f1f6e";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script> {% endcomment %}
+
+
+    <!-- <script src="{% static 'js/pwa_app_installer.js' %}"></script> -->
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "about.about_pecha" %}{% endblock %}
+
+{% block description %}{% trans "about.about_pecha_description" %}{% endblock %}
+
+{% block css %}
+    #top #languageToggle {
+        display: inline;
+    }
+    #top #languageToggle #bilingual {
+        display: none;
+    }
+    #aboutPage a {
+        text-decoration: underline;
+    }
+{% endblock %}
+
+{% block content %}
+<main id="aboutPage" class="biReady container static sans-serif">
+    <div id="aboutCover">
+        <video id="aboutVideo" poster="/static/img/home-video.jpg" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">
+            <source src="/static/img/home-video.webm" type="video/webm">
+            <source src="/static/img/home-video.mp4" type="video/mp4">
+            Video of sofer writing letters of the Torah
+        </video>
+    </div>
+    <div class="inner">
+        <header id="aboutHeader" class="sans-serif-in-hebrew">
+        <h1 id="aboutTitle">
+            <span class="int-he">དཔེ་ཆ་དྲ་བའི་སྐོར།</span>
+        </h1>
+        <div id="aboutTitleSub">
+            <span class="int-he">ནང་པའི་དྲ་ཐོག་གི་དཔེ་མཛོད།</span>
+        </div>
+        </header>
+        <section class="about section">
+            <p class="first">
+                <span class="int-he">དཔེ་ཆ་དྲ་བ་ནི་ནང་པའི་སློབ་སྦྱོང་གི་མ་འོངས་པ་དེ་གུ་ཡངས་ཤིང་མཉམ་ཞུགས་ཅན་གྱི་སྒོ་ནས་འཛུགས་སྐྲུན་བྱེད་པར་ཞུགས་པའི་ཁེ་ལས་མིན་པའི་ཚོགས་པ་ཞིག་ཡིན། ང་ཚོས་ནང་པའི་གཞུང་དང་དེ་དག་གི་འབྲེལ་བ་རྣམས་བོད་སྐད་དང་ཡིག་སྒྱུར་གཉིས་ཀར་རིན་མེད་དུ་སྤྲོད་པའི་འཚོ་བཞིན་པའི་དཔེ་མཛོད་ཅིག་བསྡུ་སྒྲིག་བྱེད་བཞིན་ཡོད། གློག་ཀླད་ཐོག་གི་ཡིག་ཆ་འདི་དག་གི་ཐོག་ནས། ང་ཚོས་དྲ་ཚིགས་དང་། གློག་ཀླད་ཆུང་བ། ལག་ཐོགས་ཁ་པར་བཅས་ཀྱི་ཆེད་དུ་སྤྱོད་བདེ་བའི་མཉམ་འབྲེལ་གྱི་མཐུད་ཁ་གསར་པ་བཟོ་ཐུབ། དེས་མི་མང་པོར་ང་ཚོའི་སྲོལ་རྒྱུན་གྱི་གཞུང་ལུགས་ཀྱི་གཏེར་མཛོད་དང་འབྲེལ་བ་བྱེད་པའི་གོ་སྐབས་སྤྲོད་ཐུབ།
+                </span>
+            </p>
+            
+        </section>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "registration.logged_out.logged_out_pecha" %}{% endblock %}
+
+{% block content %}
+
+{% include "elements/header.html" %}
+
+<div id="loggedOut" >
+
+	<p id="message">
+		{% trans "registration.logged_out.you_are_now_logged_out %} <a href="{% url "login" %}">{% trans "registration.logged_out.log_back_in" %}</a>.
+	</p>
+	
+</div>
+{% endblock %}

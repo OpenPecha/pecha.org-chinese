@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "about.about_pecha" %}{% endblock %}
+
+{% block description %}{% trans "about.about_pecha_description" %}{% endblock %}
+
+{% block css %}
+    #top #languageToggle {
+        display: inline;
+    }
+    #top #languageToggle #bilingual {
+        display: none;
+    }
+    #aboutPage a {
+        text-decoration: underline;
+    }
+{% endblock %}
+
+{% block content %}
+<main id="aboutPage" class="biReady container static">
+    <div id="aboutCover">
+        <video id="aboutVideo" poster="/static/img/home-video.jpg" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">
+            <source src="/static/img/home-video.webm" type="video/webm">
+            <source src="/static/img/home-video.mp4" type="video/mp4">
+            Video of sofer writing letters of the Torah
+        </video>
+    </div>
+    <div class="inner">
+        <header id="aboutHeader" class="sans-serif-in-hebrew">
+            <h1 id="aboutTitle">
+                <span class="int-en">About Pecha</span>
+            </h1>
+            <div id="aboutTitleSub">
+                <span class="int-en">A Living Library of Buddhist Texts Online.</span>
+            </div>
+        </header>
+        <section class="about section">
+            <p>
+                <span class="int-en">Pecha is a nonprofit organization dedicated to building the future of Buddhist learning in an open and participatory way.
+                    We are assembling a free living library of Buddhist texts and their interconnections,
+                    in Tibetan and in translation.
+                    With these digital texts, we can create new, interactive interfaces for Web, tablet and mobile,
+                    allowing more people to engage with the textual treasures of our tradition.
+                </span>
+            </p>
+
+        </section>
+        
+           
+    </div>
+</main>
+{% endblock %}

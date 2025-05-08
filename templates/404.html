@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "page_not_found_title" %}{% endblock %}
+
+{% block content %}
+
+<div class="container error static biReady">
+    <div class="inner">
+        <h1>
+            <span class="{{language_font_class}}">{% trans "page_not_found_message" %}</span>
+        </h1>
+        <p>
+            <span class="{{language_font_class}}">
+                {% trans "link_not_working_message" %}
+            </span>
+        </p>
+    </div>
+</div> 
+
+{% endblock %}
