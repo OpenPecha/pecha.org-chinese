@@ -3375,8 +3375,9 @@ def background_data_api(request):
     API that bundles data which we want the client to prefetch,
     but should not block initial pageload.
     """
-    language = request.GET.get("locale", 'english')
-    # This is an API, its excluded from interfacelang middleware. There's no point in defaulting to request.interfaceLang here as its always 'english'.
+    print("data>>>>>>>>>>>>>>>", request.GET.get("locale", None))
+    language = request.GET.get("locale", 'chinese')
+    # This is an API, its excluded from interfacelang middleware. There's no point in defaulting to request.interfaceLang here as its always 'chinese'.
 
     data = {}
     data.update(community_page_data(request, language=language))
